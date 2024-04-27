@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit task</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Modify task</h1>
+    <form id="editForm" method="post" action="/update/<%=id%>">
+      
+        <textarea name="task" rows="5"><%=task %></textarea>
+        <input type="text" name="priority" value="<%=priority %>">
+        <button class="full-width" type="submit"> Update</button>
+      </form>
+  </div>
+</body>
+</html>

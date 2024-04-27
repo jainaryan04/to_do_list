@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+
+<div class="container mt-5">
+
+  
+
+  <div class="logreg">
+    <% if(locals.msg) { %>
+      <h1 style="text-align: center;"><%=locals.msg%></h1>
+      <% } else { %>
+      <h1 style="text-align: center;">Login</h1>
+      <%}%>
+    <div class="col-sm-8">
+      <div class="card">
+        <div class="card-body">
+
+          <form action="/login" method="POST"  >
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" class="form-control" name="email">
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" name="password">
+            </div>
+            <button type="submit" class="btn btn-dark">Login</button> <br>
+            <a href="register" style="font-size: larger;">First Time ? Register Now</a>
+          </form>
+
+        </div>
+      </div>
+    </div>
+    </div>
+</div>
+</body>
+
+</html>
