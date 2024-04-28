@@ -2,8 +2,10 @@ import express from "express"
 import bodyParser from "body-parser"
 import pg from "pg"
 import env from "dotenv";
+import bcrypt from "bcrypt";
 
 const app=express();
+const saltRounds = 10;
 const port=3000;
 env.config();
 var task,length,email,password
@@ -42,12 +44,17 @@ const db = new pg.Client({
       if (checkResult.rows.length > 0) {
         res.render("login.ejs",{msg:"Email aldready exists. Try logging in"});
       } else {
-        await db.query("INSERT INTO users (email,password,task,priority) VALUES ($1, $2,$3,$4)",
-          [email, password,"{}","{}"]
-        );
-        console.log(result);
-        res.redirect("/login")
-      }
+        bcrypt.hash(password, saltRounds, async (err, hash) => {
+          if (err) {
+            console.error("Error hashing password:", err);
+          } else {
+            console.log("Hashed Password:", hash);
+            await db.query("INSERT INTO users (email,password,task,priority) VALUES ($1, $2,$3,$4)",
+          [email, hash,"{}","{}"]);
+          res.redirect("/login")
+        }
+        });
+         }
     } catch (err) {
       console.log(err);
     }
@@ -61,12 +68,20 @@ const db = new pg.Client({
       console.log(result)
       if (result.rows.length > 0) {
         const user = result.rows[0];
-        const storedPassword = user.password;  
-        if (password === storedPassword) {
-        res.redirect("/list")    
-        } else {
-          res.render("login.ejs",{msg:"Incorrect Password. Try again"});
-        }
+        const storedHashedPassword = user.password;
+        bcrypt.compare(password,storedHashedPassword,(err,result)=>{
+          if(err){
+            console.log("Error comparing passwords");
+          }
+          else{
+            if(result){
+              res.redirect("/list") 
+            }
+            else {
+              res.render("login.ejs",{msg:"Incorrect Password. Try again"});
+            }
+          }
+        })   
       } else {
         res.render("login.ejs",{msg:"User not found"});
       }
